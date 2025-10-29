@@ -14,20 +14,26 @@ node {
     stage('Deploy to EC2') {
         echo 'Deploying to EC2 instance...'
         sh """
+            # Ensure target directory exists
             sudo mkdir -p ${appDir}
             sudo chown -R jenkins:jenkins ${appDir}
 
-            rsync -av --delete --exclude='.git' --exclude='node_modules' . ${appDir}/
+            # Copy files from Jenkins workspace to EC2 directory
+            rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}/
 
             cd ${appDir}
-            sudo npm install
-            sudo npm run build
 
-            # Kill any process using port 3000 (if running)
+            # Install dependencies
+            npm install --legacy-peer-deps
+
+            # Build the Next.js project
+            npm run build
+
+            # Stop any process using port 3000
             sudo fuser -k 3000/tcp || true
 
-            # Start Next.js app in background
-            nohup npm run start > app.log 2>&1 &
+            # Start the app with nohup (in background)
+            nohup npm start > app.log 2>&1 &
         """
     }
 }
