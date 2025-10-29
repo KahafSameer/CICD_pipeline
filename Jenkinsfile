@@ -19,21 +19,21 @@ node {
             sudo chown -R jenkins:jenkins ${appDir}
 
             echo "📂 Syncing project files..."
-            rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}/
+            rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}
 
             cd ${appDir}
 
             echo "📦 Installing dependencies..."
-            npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+            sudo npm install
 
             echo "🏗️ Building Next.js app..."
-            npm run build
+            sudo npm run build
 
             echo "🛑 Killing old process on port 3000..."
             sudo fuser -k 3000/tcp || true
 
             echo "🚀 Starting Next.js app in background..."
-            nohup npm start -- -H 0.0.0.0 > app.log 2>&1 &
+            npm run start
 
             sleep 3
             echo "✅ Deployment completed. App should now be running on port 3000."
