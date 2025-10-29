@@ -17,7 +17,7 @@ export default function Home() {
             Get started the DEVOPS Journey, With  Kahaf Sameer Software Engineer
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to my GitHub Profile{" "}
+            Looking for a starting DEVOPS or more instructions? Head over to my GitHub Profile{" "}
             <a
               href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
               className="font-medium text-zinc-950 dark:text-zinc-50"
