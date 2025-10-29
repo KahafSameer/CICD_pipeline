@@ -18,22 +18,25 @@ node {
             sudo mkdir -p ${appDir}
             sudo chown -R jenkins:jenkins ${appDir}
 
-            # Copy files from Jenkins workspace to EC2 directory
+            echo "📂 Syncing project files..."
             rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}/
 
             cd ${appDir}
 
-            # Install dependencies
-            npm install --legacy-peer-deps
+            echo "📦 Installing dependencies..."
+            npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
-            # Build the Next.js project
+            echo "🏗️ Building Next.js app..."
             npm run build
 
-            # Stop any process using port 3000
+            echo "🛑 Killing old process on port 3000..."
             sudo fuser -k 3000/tcp || true
 
-            # Start the app with nohup (in background)
-            nohup npm start > app.log 2>&1 &
+            echo "🚀 Starting Next.js app in background..."
+            nohup npm start -- -H 0.0.0.0 > app.log 2>&1 &
+
+            sleep 3
+            echo "✅ Deployment completed. App should now be running on port 3000."
         """
     }
 }
